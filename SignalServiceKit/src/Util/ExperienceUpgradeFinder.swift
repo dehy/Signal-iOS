@@ -35,9 +35,13 @@ public enum ExperienceUpgradeId: String, CaseIterable, Dependencies {
             Logger.info("Checking notification authorization")
 
             DispatchQueue.global(qos: .userInitiated).async {
-                UNUserNotificationCenter.current().getNotificationSettings { settings in
-                    Logger.info("Checked notification authorization \(settings.authorizationStatus)")
-                    resolver.fulfill(settings.authorizationStatus == .authorized)
+                if #available(iOSApplicationExtension 10.0, *) {
+                    UNUserNotificationCenter.current().getNotificationSettings { settings in
+                        Logger.info("Checked notification authorization \(settings.authorizationStatus)")
+                        resolver.fulfill(settings.authorizationStatus == .authorized)
+                    }
+                } else {
+                    // Fallback on earlier versions
                 }
             }
 

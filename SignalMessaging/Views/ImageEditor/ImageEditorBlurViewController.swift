@@ -69,7 +69,11 @@ public class ImageEditorBlurViewController: OWSViewController {
         autoBlurLabel.autoPinLeadingToSuperviewMargin()
         autoBlurLabel.autoPinHeightToSuperviewMargins()
 
-        faceBlurSwitch.addTarget(self, action: #selector(didToggleAutoBlur), for: .valueChanged)
+        if #available(iOSApplicationExtension 11.0, *) {
+            faceBlurSwitch.addTarget(self, action: #selector(didToggleAutoBlur), for: .valueChanged)
+        } else {
+            // Fallback on earlier versions
+        }
         faceBlurSwitch.isOn = currentAutoBlurItem != nil
 
         faceBlurContainer.addSubview(faceBlurSwitch)
@@ -185,6 +189,7 @@ public class ImageEditorBlurViewController: OWSViewController {
         return model.item(forId: ImageEditorBlurViewController.autoBlurItemIdentifier) as? ImageEditorBlurRegionsItem
     }
 
+    @available(iOSApplicationExtension 11.0, *)
     @objc func didToggleAutoBlur(sender: UISwitch) {
         Logger.verbose("")
 

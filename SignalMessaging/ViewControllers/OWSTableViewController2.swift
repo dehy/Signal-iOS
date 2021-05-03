@@ -350,8 +350,14 @@ extension OWSTableViewController2: UITableViewDataSource, UITableViewDelegate {
             guard let self = self else { return }
             var pillFrame = view.bounds.inset(by: self.cellOuterInsets)
 
-            pillFrame.x += view.safeAreaInsets.left
-            pillFrame.size.width -= view.safeAreaInsets.left + view.safeAreaInsets.right
+            if #available(iOSApplicationExtension 11.0, *) {
+                pillFrame.x += view.safeAreaInsets.left
+                pillFrame.size.width -= view.safeAreaInsets.left + view.safeAreaInsets.right
+            } else {
+                // Fallback on earlier versions
+                pillFrame.x += view.left
+                pillFrame.size.width -= view.left + view.right
+            }
             pillLayer.frame = view.bounds
             if pillFrame.width > 0,
                pillFrame.height > 0 {
@@ -424,8 +430,14 @@ extension OWSTableViewController2: UITableViewDataSource, UITableViewDelegate {
             guard let self = self else { return }
             var pillFrame = view.bounds.inset(by: self.cellOuterInsets)
 
-            pillFrame.x += view.safeAreaInsets.left
-            pillFrame.size.width -= view.safeAreaInsets.left + view.safeAreaInsets.right
+            if #available(iOSApplicationExtension 11.0, *) {
+                pillFrame.x += view.safeAreaInsets.left
+                pillFrame.size.width -= view.safeAreaInsets.left + view.safeAreaInsets.right
+            } else {
+                // Fallback on earlier versions
+                pillFrame.x += view.left
+                pillFrame.size.width -= view.left + view.right
+            }
             pillLayer.frame = view.bounds
             if pillFrame.width > 0,
                pillFrame.height > 0 {
@@ -479,11 +491,11 @@ extension OWSTableViewController2: UITableViewDataSource, UITableViewDelegate {
     public static func cellOuterInsets(in view: UIView) -> UIEdgeInsets {
         var insets = UIEdgeInsets()
 
-        if view.safeAreaInsets.left <= 0 {
+        if view.left <= 0 {
             insets.left = defaultHOuterMargin
         }
 
-        if view.safeAreaInsets.right <= 0 {
+        if view.right <= 0 {
             insets.right = defaultHOuterMargin
         }
 
@@ -571,8 +583,8 @@ extension OWSTableViewController2: UITableViewDataSource, UITableViewDelegate {
                 bottom: 10,
                 right: Self.cellHInnerMargin * 0.5
             )
-            textContainerInset.left += tableView.safeAreaInsets.left
-            textContainerInset.right += tableView.safeAreaInsets.right
+            textContainerInset.left += tableView.left
+            textContainerInset.right += tableView.right
             textView.textContainerInset = textContainerInset
 
             return textView
@@ -635,8 +647,8 @@ extension OWSTableViewController2: UITableViewDataSource, UITableViewDelegate {
                 bottom: 0,
                 right: Self.cellHInnerMargin
             )
-            textContainerInset.left += tableView.safeAreaInsets.left
-            textContainerInset.right += tableView.safeAreaInsets.right
+            textContainerInset.left += tableView.left
+            textContainerInset.right += tableView.right
             textView.textContainerInset = textContainerInset
 
             return textView
@@ -911,7 +923,7 @@ extension OWSTableViewController2: UITableViewDataSource, UITableViewDelegate {
     func updateNavbarStyling() {
         guard let navigationBar = navigationController?.navigationBar as? OWSNavigationBar else { return }
 
-        if tableView.contentOffset.y <= (defaultSpacingBetweenSections ?? 0) - tableView.adjustedContentInset.top {
+        if tableView.contentOffset.y <= (defaultSpacingBetweenSections ?? 0) - tableView.top {
             navigationBar.switchToStyle(.solid, animated: true)
 
             // We always want to treat the bar as translucent, regardless of

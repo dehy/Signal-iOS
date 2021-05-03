@@ -38,7 +38,12 @@ public struct MailtoLink {
             .filter { $0.1.count > 0 }
             .map { URLQueryItem(name: $0.0, value: $0.1) }
 
-        componentsBuilder.percentEncodedQueryItems = cleanedQueryItems
+        if #available(iOSApplicationExtension 11.0, *) {
+            componentsBuilder.percentEncodedQueryItems = cleanedQueryItems
+        } else {
+            // Fallback on earlier versions
+            componentsBuilder.queryItems = cleanedQueryItems
+        }
         return componentsBuilder.url
     }
 

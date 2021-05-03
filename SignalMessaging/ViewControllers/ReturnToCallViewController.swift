@@ -154,7 +154,7 @@ public class ReturnToCallViewController: UIViewController {
         let padding: CGFloat = 4
         var rect = CurrentAppContext().frame
 
-        let safeAreaInsets = OWSWindowManager.shared.rootWindow.safeAreaInsets
+        let safeAreaInsets = OWSWindowManager.shared.rootWindow
 
         let leftInset = safeAreaInsets.left + padding
         let rightInset = safeAreaInsets.right + padding

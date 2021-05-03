@@ -104,7 +104,7 @@ class MentionPicker: UIView {
         guard let superview = superview else { return CurrentAppContext().frame.height }
         superview.layoutIfNeeded()
         let maximumCellHeight = CGFloat(filteredMentionableUsers.count) * cellHeight
-        let maximumContainerHeight = superview.height - (superview.height - frame.maxY) - superview.safeAreaInsets.top
+        let maximumContainerHeight = superview.height - (superview.height - frame.maxY) - superview.top
         return min(maximumCellHeight, maximumContainerHeight)
     }
 

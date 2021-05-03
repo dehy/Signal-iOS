@@ -199,7 +199,7 @@ public class UIDatabaseObserver: NSObject {
                 displayLink.isPaused = false
             } else {
                 let link = CADisplayLink(target: self, selector: #selector(displayLinkDidFire))
-                link.preferredFramesPerSecond = displayLinkPreferredFramesPerSecond
+                //link.preferredFramesPerSecond = displayLinkPreferredFramesPerSecond
                 link.add(to: .main, forMode: .default)
                 assert(!link.isPaused)
                 displayLink = link

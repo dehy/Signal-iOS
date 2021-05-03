@@ -375,6 +375,11 @@ public class ImageEditorPaletteView: UIView {
         gradientLayer.startPoint = CGPoint.zero
         gradientLayer.endPoint = CGPoint(x: 0, y: gradientSize.height)
         gradientLayer.endPoint = CGPoint(x: 0, y: 1.0)
-        return gradientView.renderAsImage(opaque: true, scale: UIScreen.main.scale)
+        if #available(iOSApplicationExtension 10.0, *) {
+            return gradientView.renderAsImage(opaque: true, scale: UIScreen.main.scale)
+        } else {
+            // Fallback on earlier versions
+            return gradientView.renderAsImageLegacy(scale: UIScreen.main.scale)
+        }
     }
 }

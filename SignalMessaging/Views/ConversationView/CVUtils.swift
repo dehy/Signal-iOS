@@ -14,7 +14,7 @@ public class CVUtils {
         // Note that we use the highest qos.
         DispatchQueue(label: "org.whispersystems.signal.conversationView",
                              qos: .userInteractive,
-                             autoreleaseFrequency: .workItem)
+                             autoreleaseFrequency: .inherit)
     }()
 }
 

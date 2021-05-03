@@ -1244,10 +1244,18 @@ private class LinkPreviewImageView: CVImageView {
         switch rounding {
         case .standard:
             layer.cornerRadius = smallRounding
-            layer.maskedCorners = isHero ? .top : .all
+            if #available(iOSApplicationExtension 11.0, *) {
+                layer.maskedCorners = isHero ? .top : .all
+            } else {
+                // Fallback on earlier versions
+            }
         case .circular:
             layer.cornerRadius = bounds.size.smallerAxis / 2
-            layer.maskedCorners = .all
+            if #available(iOSApplicationExtension 11.0, *) {
+                layer.maskedCorners = .all
+            } else {
+                // Fallback on earlier versions
+            }
         case .asymmetrical:
             // This uses a more expensive layer mask to clip corners
             // with different radii.

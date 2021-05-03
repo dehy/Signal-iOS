@@ -10,6 +10,24 @@ public protocol ProvisioningSocketDelegate: AnyObject {
     func provisioningSocket(_ provisioningSocket: ProvisioningSocket, didError error: Error)
 }
 
+class TimerShim {
+    private var timer: Timer?
+    private let block: (Timer) -> Void
+
+    private init(timeInterval interval: TimeInterval, repeats: Bool, block: @escaping (Timer) -> Void) {
+        self.block = block
+        timer = Timer.scheduledTimer(timeInterval: interval, target: self, selector: #selector(timerDidFire), userInfo: nil, repeats: repeats)
+    }
+
+    class func scheduledTimer(withTimeInterval interval: TimeInterval, repeats: Bool, block: @escaping (Timer) -> Void) -> Timer {
+        return TimerShim(timeInterval: interval, repeats: repeats, block: block).timer!
+    }
+
+    @objc private func timerDidFire() {
+        block(timer!)
+    }
+}
+
 public class ProvisioningSocket {
     let socket: SSKWebSocket
     public weak var delegate: ProvisioningSocketDelegate?
@@ -38,11 +56,21 @@ public class ProvisioningSocket {
     var heartBeatTimer: Timer?
     public func connect() {
         if heartBeatTimer == nil {
-            heartBeatTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
-                guard let self = self else { return }
-                guard self.state == .open else { return }
-
-                self.socket.writePing()
+            if #available(iOSApplicationExtension 10.0, *) {
+                heartBeatTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
+                    guard let self = self else { return }
+                    guard self.state == .open else { return }
+                    
+                    self.socket.writePing()
+                }
+            } else {
+                // Fallback on earlier versions
+                heartBeatTimer = TimerShim.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
+                    guard let self = self else { return }
+                    guard self.state == .open else { return }
+                    
+                    self.socket.writePing()
+                }
             }
         }
         socket.connect()

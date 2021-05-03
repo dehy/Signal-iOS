@@ -103,9 +103,23 @@ public class SpacerView: UIView {
 @objc
 public extension UIView {
     func renderAsImage() -> UIImage? {
-        renderAsImage(opaque: false, scale: UIScreen.main.scale)
+        if #available(iOSApplicationExtension 10.0, *) {
+            return renderAsImage(opaque: false, scale: UIScreen.main.scale)
+        } else {
+            // Fallback on earlier versions
+            return renderAsImageLegacy(scale: UIScreen.main.scale)
+        }
+    }
+    
+    func renderAsImageLegacy(scale: CGFloat) -> UIImage? {
+        UIGraphicsBeginImageContext(self.frame.size)
+        self.layer.render(in:UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return UIImage(cgImage: image!.cgImage!)
     }
 
+    @available(iOSApplicationExtension 10.0, *)
     func renderAsImage(opaque: Bool, scale: CGFloat) -> UIImage? {
         let format = UIGraphicsImageRendererFormat()
         format.scale = scale
@@ -1033,6 +1047,11 @@ extension UIImage {
         let imageView = UIImageView(image: template)
         imageView.tintColor = color
 
-        return imageView.renderAsImage(opaque: imageView.isOpaque, scale: UIScreen.main.scale)
+        if #available(iOSApplicationExtension 10.0, *) {
+            return imageView.renderAsImage(opaque: imageView.isOpaque, scale: UIScreen.main.scale)
+        } else {
+            // Fallback on earlier versions
+            return imageView.renderAsImageLegacy(scale: UIScreen.main.scale)
+        }
     }
 }

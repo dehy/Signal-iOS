@@ -1091,7 +1091,7 @@ public extension OWSAttachmentDownloads {
     static let serialQueue: DispatchQueue = {
         return DispatchQueue(label: "org.whispersystems.signal.download",
                              qos: .utility,
-                             autoreleaseFrequency: .workItem)
+                             autoreleaseFrequency: .inherit)
     }()
 
     // We want to avoid large downloads from a compromised or buggy service.

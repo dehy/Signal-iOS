@@ -39,7 +39,9 @@ public class InteractiveSheetViewController: OWSViewController {
         contentView.autoPinEdge(toSuperviewEdge: .bottom)
         contentView.autoHCenterInSuperview()
         contentView.autoMatch(.height, to: .height, of: view, withOffset: 0, relation: .lessThanOrEqual)
-        contentView.backgroundColor = Theme.actionSheetBackgroundColor
+        if #available(iOS 11.0, *) {
+            contentView.backgroundColor = Theme.actionSheetBackgroundColor
+        }
 
         // Prefer to be full width, but don't exceed the maximum width
         contentView.autoSetDimension(.width, toSize: maxWidth, relation: .lessThanOrEqual)
@@ -48,7 +50,11 @@ public class InteractiveSheetViewController: OWSViewController {
         }
 
         contentView.layer.cornerRadius = 16
-        contentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        if #available(iOS 11.0, *) {
+            contentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        } else {
+            // Fallback on earlier versions
+        }
         contentView.layer.masksToBounds = true
 
         // Support tapping the backdrop to cancel the sheet.

@@ -597,6 +597,36 @@ public class ServiceRemoteConfigManager: NSObject, RemoteConfigManager {
 
 // MARK: - Client Expiration
 
+private extension Formatter {
+    static let iso8601withFractionalSeconds: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
+        return formatter
+    }()
+    static let iso8601: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssXXXXX"
+        return formatter
+    }()
+}
+
+private extension JSONDecoder.DateDecodingStrategy {
+    static let customISO8601 = custom {
+        let container = try $0.singleValueContainer()
+        let string = try container.decode(String.self)
+        if let date = Formatter.iso8601withFractionalSeconds.date(from: string) ?? Formatter.iso8601.date(from: string) {
+            return date
+        }
+        throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid date: \(string)")
+    }
+}
+
 private extension ServiceRemoteConfigManager {
     private struct DecodedMinimumVersion: Codable {
         let string: String?
@@ -648,7 +678,13 @@ private extension ServiceRemoteConfigManager {
         }
 
         let jsonDecoder = JSONDecoder()
-        jsonDecoder.dateDecodingStrategy = .iso8601
+        if #available(iOSApplicationExtension 10.0, *) {
+            jsonDecoder.dateDecodingStrategy = .iso8601
+        } else {
+            // Fallback on earlier versions
+            // https://stackoverflow.com/questions/46458487/how-to-convert-a-date-string-with-optional-fractional-seconds-using-codable-in-s
+            jsonDecoder.dateDecodingStrategy = .customISO8601
+        }
 
         do {
             let decodedValues = try jsonDecoder.decode([DecodedMinimumVersion].self, from: valueData)

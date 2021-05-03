@@ -188,7 +188,11 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
                 nameLabel.text = NSLocalizedString("SETTINGS_UNIDENTIFIED_DELIVERY_SHOW_INDICATORS", comment: "switch label")
                 nameLabel.textColor = Theme.primaryTextColor
                 nameLabel.font = OWSTableItem.primaryLabelFont
-                nameLabel.adjustsFontForContentSizeCategory = true
+                if #available(iOS 10.0, *) {
+                    nameLabel.adjustsFontForContentSizeCategory = true
+                } else {
+                    // Fallback on earlier versions
+                }
                 nameLabel.numberOfLines = 0
                 nameLabel.lineBreakMode = .byWordWrapping
                 nameLabel.setCompressionResistanceHorizontalHigh()

@@ -54,7 +54,12 @@ public class VideoPlayerView: UIView {
         guard let player = player else {
             return false
         }
-        return player.timeControlStatus == .playing
+        if #available(iOSApplicationExtension 10.0, *) {
+            return player.timeControlStatus == .playing
+        } else {
+            // Fallback on earlier versions
+            return player.rate != 0.0
+        }
     }
 
     @objc

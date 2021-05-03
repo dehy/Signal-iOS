@@ -28,7 +28,11 @@ public class LoopingVideo: NSObject {
 
         player.isMuted = true
         player.allowsExternalPlayback = false
-        player.automaticallyWaitsToMinimizeStalling = false
+        if #available(iOSApplicationExtension 10.0, *) {
+            player.automaticallyWaitsToMinimizeStalling = false
+        } else {
+            // Fallback on earlier versions
+        }
 
         if #available(iOS 12, *) {
             player.preventsDisplaySleepDuringVideoPlayback = false

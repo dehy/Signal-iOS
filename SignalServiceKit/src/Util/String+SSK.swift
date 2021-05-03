@@ -285,8 +285,13 @@ public extension String {
     private var dominantLanguage: String? {
         if #available(iOS 12, *) {
             return NLLanguageRecognizer.dominantLanguage(for: self)?.rawValue
-        } else {
+        } else if #available(iOS 11, *) {
             return NSLinguisticTagger.dominantLanguage(for: self)
+        } else {
+            let tagger = NSLinguisticTagger.init(tagSchemes: [.language], options: 0)
+            tagger.string = self
+
+            return tagger.tag(at: 0, scheme: .language, tokenRange: nil, sentenceRange: nil)?.rawValue
         }
     }
 

@@ -262,7 +262,11 @@ open class MentionTextView: OWSTextView {
                 return
         }
 
-        ImpactHapticFeedback.impactOccured(style: .light)
+        if #available(iOSApplicationExtension 10.0, *) {
+            ImpactHapticFeedback.impactOccured(style: .light)
+        } else {
+            // Fallback on earlier versions
+        }
 
         let style = mentionDelegate.textViewMentionStyle(self)
         if style == .composingAttachment {
@@ -519,9 +523,9 @@ extension MentionTextView {
 
         if messageBody.hasRanges {
             let encodedMessageBody = NSKeyedArchiver.archivedData(withRootObject: messageBody)
-            UIPasteboard.general.setItems([[Self.pasteboardType: encodedMessageBody]], options: [.localOnly: true])
+            UIPasteboard.general.addItems([[Self.pasteboardType: encodedMessageBody]])
         } else {
-            UIPasteboard.general.setItems([], options: [:])
+            UIPasteboard.general.addItems([])
         }
 
         UIPasteboard.general.addItems([["public.utf8-plain-text": plaintextData]])
@@ -533,11 +537,16 @@ extension MentionTextView {
     }
 
     open override func paste(_ sender: Any?) {
-        if let encodedMessageBody = UIPasteboard.general.data(forPasteboardType: Self.pasteboardType),
-            let messageBody = try? NSKeyedUnarchiver.unarchivedObject(ofClass: MessageBody.self, from: encodedMessageBody) {
-            replaceCharacters(in: selectedRange, with: messageBody)
-        } else if let string = UIPasteboard.general.strings?.first {
-            replaceCharacters(in: selectedRange, with: string)
+        if #available(iOSApplicationExtension 11.0, *) {
+            if let encodedMessageBody = UIPasteboard.general.data(forPasteboardType: Self.pasteboardType),
+               let messageBody = try? NSKeyedUnarchiver.unarchivedObject(ofClass: MessageBody.self, from: encodedMessageBody) {
+                replaceCharacters(in: selectedRange, with: messageBody)
+            } else if let string = UIPasteboard.general.strings?.first {
+                replaceCharacters(in: selectedRange, with: string)
+            }
+        } else {
+            // Fallback on earlier versions
+            // TODO compat-ios9
         }
     }
 }
@@ -576,13 +585,13 @@ extension MentionTextView: UITextViewDelegate {
         mentionDelegate?.textViewDidEndEditing?(textView)
     }
 
-    open func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        return mentionDelegate?.textView?(textView, shouldInteractWith: URL, in: characterRange, interaction: interaction) ?? true
-    }
-
-    open func textView(_ textView: UITextView, shouldInteractWith textAttachment: NSTextAttachment, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        return mentionDelegate?.textView?(textView, shouldInteractWith: textAttachment, in: characterRange, interaction: interaction) ?? true
-    }
+//    open func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+//        return mentionDelegate?.textView?(textView, shouldInteractWith: URL, in: characterRange, interaction: interaction) ?? true
+//    }
+//
+//    open func textView(_ textView: UITextView, shouldInteractWith textAttachment: NSTextAttachment, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+//        return mentionDelegate?.textView?(textView, shouldInteractWith: textAttachment, in: characterRange, interaction: interaction) ?? true
+//    }
 
     open func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
         return mentionDelegate?.textView?(textView, shouldInteractWith: URL, in: characterRange) ?? true

@@ -61,7 +61,7 @@ public class ContactDiscoveryTask: NSObject {
         let workQueue = DispatchQueue(
             label: "org.whispersystems.signal.\(type(of: self))",
             qos: qos,
-            autoreleaseFrequency: .workItem,
+            autoreleaseFrequency: .inherit,
             target: targetQueue ?? .sharedQueue(at: qos))
 
         return firstly { () -> Promise<Set<DiscoveredContactInfo>> in

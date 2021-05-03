@@ -122,14 +122,19 @@ public class OWSScreenLock: NSObject {
 
         guard canEvaluatePolicy, authError == nil else { return .unknown }
 
-        switch context.biometryType {
-        case .none:
-            return .passcode
-        case .faceID:
-            return .faceId
-        case .touchID:
-            return .touchId
-        @unknown default:
+        if #available(iOSApplicationExtension 11.0, *) {
+            switch context.biometryType {
+            case .none:
+                return .passcode
+            case .faceID:
+                return .faceId
+            case .touchID:
+                return .touchId
+            @unknown default:
+                return .unknown
+            }
+        } else {
+            // Fallback on earlier versions
             return .unknown
         }
     }
@@ -310,7 +315,7 @@ public class OWSScreenLock: NSObject {
         // Never recycle biometric auth.
         context.touchIDAuthenticationAllowableReuseDuration = TimeInterval(0)
 
-        assert(!context.interactionNotAllowed)
+        //assert(!context.interactionNotAllowed)
 
         return context
     }

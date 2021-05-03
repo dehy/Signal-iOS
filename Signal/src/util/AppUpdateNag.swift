@@ -158,7 +158,12 @@ class AppUpdateNag: NSObject {
 
         Logger.debug("")
 
-        UIApplication.shared.open(appStoreURL, options: [:])
+        if #available(iOS 10.0, *) {
+            UIApplication.shared.open(appStoreURL, options: [:])
+        } else {
+            // Fallback on earlier versions
+            UIApplication.shared.openURL(appStoreURL)
+        }
     }
 
     // MARK: Storage

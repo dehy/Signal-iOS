@@ -149,6 +149,47 @@ struct MediaGalleryRecord: Codable, FetchableRecord, PersistableRecord {
     let originalAlbumOrder: Int
 }
 
+public struct DateInterval {
+
+    /// The start date.
+    public var start: Date
+
+    /// The end date.
+    ///
+    /// - precondition: `end >= start`
+    public var end: Date
+
+    /// The duration.
+    ///
+    /// - precondition: `duration >= 0`
+    public var duration: TimeInterval
+
+    /// Initializes a `DateInterval` with start and end dates set to the current date and the duration set to `0`.
+    public init() {
+        self.start = Date()
+        self.end = Date()
+        self.duration = 0
+    }
+
+    /// Initialize a `DateInterval` with the specified start and end date.
+    ///
+    /// - precondition: `end >= start`
+    public init(start: Date, end: Date) {
+        self.start = start
+        self.end = end
+        self.duration = start.timeIntervalSince(start)
+    }
+
+    /// Initialize a `DateInterval` with the specified start date and duration.
+    ///
+    /// - precondition: `duration >= 0`
+    public init(start: Date, duration: TimeInterval) {
+        self.start = start
+        self.end = start.addingTimeInterval(duration)
+        self.duration = duration
+    }
+}
+
 extension MediaGalleryFinder {
     public enum EnumerationCompletion {
         /// Enumeration completed normally.

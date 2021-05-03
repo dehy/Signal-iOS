@@ -762,7 +762,7 @@ public extension MessageSender {
     private static let completionQueue: DispatchQueue = {
         return DispatchQueue(label: "org.whispersystems.signal.messageSendCompletion",
                              qos: .utility,
-                             autoreleaseFrequency: .workItem)
+                             autoreleaseFrequency: .inherit)
     }()
 
     typealias DeviceMessageType = [String: AnyObject]

@@ -795,7 +795,13 @@ public class ImageEditorCanvasView: UIView {
 
         CATransaction.commit()
 
-        let image = view.renderAsImage(opaque: !hasAlpha, scale: dstScale)
+        var image: UIImage?
+        if #available(iOSApplicationExtension 10.0, *) {
+            image = view.renderAsImage(opaque: !hasAlpha, scale: dstScale)
+        } else {
+            // Fallback on earlier versions
+            image = view.renderAsImageLegacy(scale: dstScale)
+        }
         return image
     }
 

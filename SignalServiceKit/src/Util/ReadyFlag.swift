@@ -28,7 +28,7 @@ public class ReadyFlag: NSObject {
     // All instances can share a single queue.
     private static let serialQueue = DispatchQueue(label: "ReadyFlag",
                                                    qos: .utility,
-                                                   autoreleaseFrequency: .workItem)
+                                                   autoreleaseFrequency: .inherit)
 
     private let unfairLock = UnfairLock()
 

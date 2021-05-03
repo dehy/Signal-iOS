@@ -4,6 +4,7 @@
 
 import Foundation
 
+@available(iOSApplicationExtension 10.0, *)
 public class SelectionHapticFeedback {
     let selectionFeedbackGenerator: UISelectionFeedbackGenerator
 
@@ -22,6 +23,7 @@ public class SelectionHapticFeedback {
     }
 }
 
+@available(iOSApplicationExtension 10.0, *)
 @objc
 public class NotificationHapticFeedback: NSObject {
     let feedbackGenerator = UINotificationFeedbackGenerator()
@@ -41,6 +43,7 @@ public class NotificationHapticFeedback: NSObject {
     }
 }
 
+@available(iOSApplicationExtension 10.0, *)
 @objc
 public class ImpactHapticFeedback: NSObject {
     @objc

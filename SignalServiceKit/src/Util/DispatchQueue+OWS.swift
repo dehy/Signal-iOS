@@ -9,25 +9,25 @@ extension DispatchQueue {
     public static let sharedUserInteractive: DispatchQueue = {
         return DispatchQueue(label: "org.whispersystems.signal.sharedUserInteractive",
                              qos: .userInteractive,
-                             autoreleaseFrequency: .workItem)
+                             autoreleaseFrequency: .inherit)
     }()
 
     public static let sharedUserInitiated: DispatchQueue = {
         return DispatchQueue(label: "org.whispersystems.signal.sharedUserInitiated",
                              qos: .userInitiated,
-                             autoreleaseFrequency: .workItem)
+                             autoreleaseFrequency: .inherit)
     }()
 
     public static let sharedUtility: DispatchQueue = {
         return DispatchQueue(label: "org.whispersystems.signal.sharedUtility",
                              qos: .utility,
-                             autoreleaseFrequency: .workItem)
+                             autoreleaseFrequency: .inherit)
     }()
 
     public static let sharedBackground: DispatchQueue = {
         return DispatchQueue(label: "org.whispersystems.signal.sharedBackground",
                              qos: .background,
-                             autoreleaseFrequency: .workItem)
+                             autoreleaseFrequency: .inherit)
     }()
 
     /// Returns the shared serial queue appropriate for the provided QoS

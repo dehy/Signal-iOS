@@ -87,7 +87,9 @@ class EmojiSkinTonePicker: UIView {
             let selectedButton = singleSelectionButtons.first { $0.isSelected }
 
             if let selectedButton = selectedButton, selectedButton != previouslySelectedButton {
-                SelectionHapticFeedback().selectionChanged()
+                if #available(iOS 10, *) {
+                    SelectionHapticFeedback().selectionChanged()
+                }
             }
         }
     }

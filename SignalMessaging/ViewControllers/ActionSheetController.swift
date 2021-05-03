@@ -58,7 +58,12 @@ open class ActionSheetController: OWSViewController {
     /// The height of the entire action sheet, including any portion
     /// that extends off screen / is in the scrollable region
     var height: CGFloat {
-        return stackView.height + view.safeAreaInsets.bottom
+        if #available(iOSApplicationExtension 11.0, *) {
+            return stackView.height + view.safeAreaInsets.bottom
+        } else {
+            // Fallback on earlier versions
+            return stackView.height + view.bottom
+        }
     }
 
     public init(theme: Theme.ActionSheet = .default) {
@@ -172,7 +177,11 @@ open class ActionSheetController: OWSViewController {
         contentView.addSubview(backgroundView)
         backgroundView.autoPinWidthToSuperview()
         backgroundView.autoPinEdge(.top, to: .top, of: contentView)
-        scrollView.frameLayoutGuide.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor).isActive = true
+        if #available(iOSApplicationExtension 11.0, *) {
+            scrollView.frameLayoutGuide.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor).isActive = true
+        } else {
+            // Fallback on earlier versions
+        }
 
         // Stack views don't support corner masking pre-iOS 14
         // Instead we add our stack view to a wrapper view with masksToBounds: true
@@ -190,7 +199,11 @@ open class ActionSheetController: OWSViewController {
         let cornerRadius: CGFloat = 16
         [backgroundView, stackViewContainer].forEach { subview in
             subview.layer.cornerRadius = cornerRadius
-            subview.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            if #available(iOSApplicationExtension 11.0, *) {
+                subview.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            } else {
+                // Fallback on earlier versions
+            }
             subview.layer.masksToBounds = true
         }
 
@@ -213,7 +226,10 @@ open class ActionSheetController: OWSViewController {
         // the contentOffset.
         scrollView.layoutSubviews()
 
-        let bottomInset = scrollView.adjustedContentInset.bottom
+        var bottomInset = scrollView.bottom
+        if #available(iOSApplicationExtension 11.0, *) {
+            bottomInset = scrollView.adjustedContentInset.bottom
+        }
         scrollView.contentOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.height + bottomInset)
     }
 

@@ -58,6 +58,7 @@ public class LinkingTextView: UITextView {
     }
 }
 
+@available(iOSApplicationExtension 10.0, *)
 extension LinkingTextView: UITextViewDelegate {
     public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         let vc = SFSafariViewController(url: URL)

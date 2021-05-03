@@ -212,7 +212,11 @@ public extension OWSTableItem {
             nameLabel.textColor = Theme.primaryTextColor
         }
         nameLabel.font = OWSTableItem.primaryLabelFont
-        nameLabel.adjustsFontForContentSizeCategory = true
+        if #available(iOSApplicationExtension 10.0, *) {
+            nameLabel.adjustsFontForContentSizeCategory = true
+        } else {
+            // Fallback on earlier versions
+        }
 
         // Having two side-by-side multi-line labels makes
         // autolayout *really* confused because it doesn't
@@ -241,7 +245,11 @@ public extension OWSTableItem {
             accessoryLabel.text = accessoryText
             accessoryLabel.textColor = accessoryTextColor ?? (Theme.isDarkThemeEnabled ? .ows_gray25 : .ows_gray45)
             accessoryLabel.font = OWSTableItem.accessoryLabelFont
-            accessoryLabel.adjustsFontForContentSizeCategory = true
+            if #available(iOSApplicationExtension 10.0, *) {
+                accessoryLabel.adjustsFontForContentSizeCategory = true
+            } else {
+                // Fallback on earlier versions
+            }
 
             if itemName.count >= accessoryText.count {
                 accessoryLabel.numberOfLines = 1

@@ -311,7 +311,11 @@ extension StickerPackCollectionView {
     private class func buildLayout() -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
 
-        layout.sectionInsetReference = .fromSafeArea
+        if #available(iOSApplicationExtension 11.0, *) {
+            layout.sectionInsetReference = .fromSafeArea
+        } else {
+            // Fallback on earlier versions
+        }
         layout.minimumInteritemSpacing = kSpacing
         layout.minimumLineSpacing = kSpacing
         let inset = kSpacing
@@ -327,7 +331,13 @@ extension StickerPackCollectionView {
             return
         }
 
-        let containerWidth = self.safeAreaLayoutGuide.layoutFrame.size.width
+        var containerWidth: CGFloat
+        if #available(iOSApplicationExtension 11.0, *) {
+            containerWidth = self.safeAreaLayoutGuide.layoutFrame.size.width
+        } else {
+            // Fallback on earlier versions
+            containerWidth = self.frame.size.width
+        }
 
         let spacing = StickerPackCollectionView.kSpacing
         let inset = spacing
